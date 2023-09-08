@@ -22,20 +22,6 @@ func resize(img image.Image) image.Image {
 
 func Draw(r io.Reader) (string, error) {
 	
-	/*
-	args := os.Args
-	if len(args) == 1 {
-		log.Fatal("missing filename")
-	}
-	
-	imageFile, err := os.Open(args[1])
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer imageFile.Close()
-	*/
-	// Consider using the general image.Decode as it can sniff and decode any registered image format.
-	
 	img, format, err := image.Decode(r)
 	if err != nil {
 		log.Fatal(err)
