@@ -1,13 +1,14 @@
-package main
+package asciiart
 
 import (
+	"bytes"
 	"fmt"
 	"image"
 	"image/color"
-	"log"
-	"os"
 	_ "image/jpeg"
 
+	"io"
+	"log"
 	"golang.org/x/image/draw"
 )
 
@@ -19,8 +20,9 @@ func resize(img image.Image) image.Image {
 
 }
 
-func main() {
+func Draw(r io.Reader) (string, error) {
 	
+	/*
 	args := os.Args
 	if len(args) == 1 {
 		log.Fatal("missing filename")
@@ -31,10 +33,10 @@ func main() {
 		log.Fatal(err)
 	}
 	defer imageFile.Close()
-
+	*/
 	// Consider using the general image.Decode as it can sniff and decode any registered image format.
 	
-	img, format, err := image.Decode(imageFile)
+	img, format, err := image.Decode(r)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,6 +48,8 @@ func main() {
 
 	levels := []string{" ", "░", "▒", "▓", "█"}
 
+	var b bytes.Buffer
+
 
 	for y := resized.Bounds().Min.Y; y < resized.Bounds().Max.Y; y++ {
 		for x := resized.Bounds().Min.X; x < resized.Bounds().Max.X; x++ {
@@ -54,8 +58,12 @@ func main() {
 			if level == 5 {
 				level--
 			}
-			fmt.Print(levels[level])
+			b.WriteString(levels[level])
+			//fmt.Print(levels[level])
 		}
-		fmt.Print("\n")
+		b.WriteString("\n")
+		//fmt.Print("\n")
 	}
+
+	return b.String(), nil
 }
