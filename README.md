@@ -1,5 +1,7 @@
 # Create ascii from picture
 
+Upload a picture to the service, returns ascii representation.
+
 ## Running locally
 
 - install Azure functions core tools

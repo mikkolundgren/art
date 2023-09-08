@@ -27,7 +27,6 @@ func Draw(r io.Reader) (string, error) {
 		log.Fatal(err)
 	}
 	fmt.Println("Image format: ", format)
-	// fmt.Println(img)
 	fmt.Println("Original image size: ", img.Bounds())
 	resized := resize(img)
 	fmt.Println("Resized image: ", resized.Bounds())
@@ -45,10 +44,8 @@ func Draw(r io.Reader) (string, error) {
 				level--
 			}
 			b.WriteString(levels[level])
-			//fmt.Print(levels[level])
 		}
 		b.WriteString("\n")
-		//fmt.Print("\n")
 	}
 
 	return b.String(), nil
