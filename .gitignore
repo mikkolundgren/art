@@ -11,6 +11,8 @@ __azurite_db*__.json
 
 .DS_Store
 *.jpg
+*.jpeg
+*.exe
 
 .vscode
 handler
