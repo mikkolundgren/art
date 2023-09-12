@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,14 +14,19 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Printf("Got request method %s", r.Method)
+    log.Printf("Got request method %s", r.Method)
+    if r.Method != "POST" {
+        w.WriteHeader(http.StatusMethodNotAllowed)
+        return
+    }
+
     defer r.Body.Close()
 
     r.ParseMultipartForm(32 << 20)
     file, _, _ := r.FormFile("data")
 	result, _ := makeArt(file)
 
-    fmt.Fprint(w, result)
+    w.Write(result)
 }
 
 func resize(img image.Image) image.Image {
@@ -33,16 +37,16 @@ func resize(img image.Image) image.Image {
 
 }
 
-func makeArt(r io.Reader) (string, error) {
+func makeArt(r io.Reader) ([]byte, error) {
 	
 	img, format, err := image.Decode(r)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Image format: ", format)
-	fmt.Println("Original image size: ", img.Bounds())
+	log.Printf("Image format: %s", format)
+	log.Printf("Original image size: %s", img.Bounds())
 	resized := resize(img)
-	fmt.Println("Resized image: ", resized.Bounds())
+	log.Printf("Resized image: %s", resized.Bounds())
 
 	levels := []string{" ", "░", "▒", "▓", "█"}
 
@@ -61,7 +65,7 @@ func makeArt(r io.Reader) (string, error) {
 		b.WriteString("\n")
 	}
 
-	return b.String(), nil
+	return b.Bytes(), nil
 }
 
 func main() {
@@ -70,6 +74,6 @@ func main() {
         listenAddr = ":" + val
     }
     http.HandleFunc("/api/asciiart", helloHandler)
-    fmt.Printf("About to listen on %s. Go to https://127.0.0.1%s/", listenAddr, listenAddr)
+    log.Printf("About to listen on %s. Go to https://127.0.0.1%s/", listenAddr, listenAddr)
     log.Fatal(http.ListenAndServe(listenAddr, nil))
 }
